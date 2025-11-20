@@ -1,0 +1,20 @@
+name = "lighter-funding-viewer"
+main = "index.js"
+compatibility_date = "2024-11-20"
+
+# Optional: Custom domain configuration
+# routes = [
+#   { pattern = "funding.example.com", zone_name = "example.com" }
+# ]
+
+# Optional: Environment variables
+# [vars]
+# MAX_FILE_SIZE = "10485760"  # 10MB in bytes
+
+# Development configuration
+[env.development]
+name = "lighter-funding-viewer-dev"
+
+# Production configuration  
+[env.production]
+name = "lighter-funding-viewer-prod"

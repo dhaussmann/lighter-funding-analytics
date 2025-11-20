@@ -1,0 +1,28 @@
+{
+  "name": "lighter-funding-viewer",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker zur Visualisierung von Lighter Funding Export CSV-Daten",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:dev": "wrangler deploy --env development",
+    "deploy:prod": "wrangler deploy --env production",
+    "tail": "wrangler tail",
+    "tail:dev": "wrangler tail --env development",
+    "tail:prod": "wrangler tail --env production"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "csv",
+    "lighter",
+    "funding",
+    "crypto"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
