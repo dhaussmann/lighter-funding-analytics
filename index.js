@@ -915,6 +915,143 @@ function getDataPage(headers, data, stats, selectedMarkets) {
       border-color: #475569;
     }
     
+    .total-overview {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    
+    .overview-header {
+      margin-bottom: 24px;
+    }
+    
+    .overview-header h2 {
+      font-size: 24px;
+      color: #f1f5f9;
+      font-weight: 700;
+    }
+    
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    
+    .overview-stat {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .overview-stat:hover {
+      transform: translateY(-2px);
+      border-color: #475569;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .overview-stat.highlight {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-color: #10b981;
+    }
+    
+    .overview-stat.highlight .overview-label,
+    .overview-stat.highlight .overview-value,
+    .overview-stat.highlight .overview-subtext {
+      color: white;
+    }
+    
+    .overview-label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    .overview-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 4px;
+    }
+    
+    .overview-value.total {
+      color: #3b82f6;
+    }
+    
+    .overview-value.forecast {
+      color: white;
+    }
+    
+    .overview-subtext {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    
+    .overview-breakdown {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .breakdown-title {
+      font-size: 14px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    
+    .breakdown-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    
+    .breakdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #1e293b;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      transition: all 0.2s ease;
+    }
+    
+    .breakdown-item:hover {
+      background: #334155;
+      border-color: #475569;
+    }
+    
+    .breakdown-market {
+      font-weight: 600;
+      color: #10b981;
+      min-width: 60px;
+    }
+    
+    .breakdown-amount {
+      color: #e2e8f0;
+      font-weight: 500;
+      margin-left: auto;
+    }
+    
+    .breakdown-forecast {
+      color: #64748b;
+      font-size: 13px;
+    }
+    
     .markets-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
@@ -1227,6 +1364,14 @@ function getDataPage(headers, data, stats, selectedMarkets) {
       .stats-row {
         grid-template-columns: 1fr;
       }
+      
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .breakdown-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -1236,6 +1381,79 @@ function getDataPage(headers, data, stats, selectedMarkets) {
       <h1>Lighter Funding Analytics</h1>
       <p>Analyse von ${data.length.toLocaleString()} Transaktionen für ${selectedMarkets.length} Markets</p>
       <a href="/" class="back-btn">← Neue Analyse</a>
+    </div>
+    
+    <!-- Kumulative Gesamtübersicht -->
+    <div class="total-overview">
+      <div class="overview-header">
+        <h2>📊 Gesamtübersicht (Alle ${selectedMarkets.length} Markets)</h2>
+      </div>
+      
+      <div class="overview-grid">
+        <div class="overview-stat">
+          <div class="overview-label">Total Payments (Aktuell)</div>
+          <div class="overview-value total">${(() => {
+            const totalPayment = Object.values(stats).reduce((sum, s) => sum + s.totalPayment, 0);
+            return '$' + totalPayment.toFixed(2);
+          })()}</div>
+        </div>
+        
+        <div class="overview-stat highlight">
+          <div class="overview-label">Prognose bis ${new Date().getFullYear()}-12-31</div>
+          <div class="overview-value forecast">${(() => {
+            const totalForecast = Object.values(stats).reduce((sum, s) => sum + s.yearEndForecast, 0);
+            return '$' + totalForecast.toFixed(2);
+          })()}</div>
+          <div class="overview-subtext">
+            Erwarteter Gewinn: ${(() => {
+              const totalPayment = Object.values(stats).reduce((sum, s) => sum + s.totalPayment, 0);
+              const totalForecast = Object.values(stats).reduce((sum, s) => sum + s.yearEndForecast, 0);
+              const gain = totalForecast - totalPayment;
+              return '$' + gain.toFixed(2);
+            })()}
+          </div>
+        </div>
+        
+        <div class="overview-stat">
+          <div class="overview-label">Durchschnittliche Rate (Gewichtet)</div>
+          <div class="overview-value">${(() => {
+            const totalPayment = Object.values(stats).reduce((sum, s) => sum + s.totalPayment, 0);
+            const weightedAvg = Object.values(stats).reduce((sum, s) => 
+              sum + (s.avgRate * s.totalPayment), 0) / totalPayment;
+            return parseFloat(weightedAvg.toFixed(6)) + '%';
+          })()}</div>
+        </div>
+        
+        <div class="overview-stat">
+          <div class="overview-label">Täglicher Durchschnitt</div>
+          <div class="overview-value">${(() => {
+            // Finde frühestes und spätestes Datum über alle Markets
+            let earliestDate = new Date();
+            let latestDate = new Date(0);
+            Object.values(stats).forEach(s => {
+              if (s.firstDate < earliestDate) earliestDate = s.firstDate;
+              if (s.lastDate > latestDate) latestDate = s.lastDate;
+            });
+            const days = (latestDate - earliestDate) / (1000 * 60 * 60 * 24);
+            const totalPayment = Object.values(stats).reduce((sum, s) => sum + s.totalPayment, 0);
+            const dailyAvg = days > 0 ? totalPayment / days : 0;
+            return '$' + dailyAvg.toFixed(2) + '/Tag';
+          })()}</div>
+        </div>
+      </div>
+      
+      <div class="overview-breakdown">
+        <div class="breakdown-title">Breakdown nach Market:</div>
+        <div class="breakdown-grid">
+          ${selectedMarkets.map(market => `
+            <div class="breakdown-item">
+              <span class="breakdown-market">${market}</span>
+              <span class="breakdown-amount">$${stats[market].totalPayment.toFixed(2)}</span>
+              <span class="breakdown-forecast">→ $${stats[market].yearEndForecast.toFixed(2)}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
     </div>
     
     <div class="markets-grid" id="marketsGrid">
